@@ -1,3 +1,2 @@
 # TERAKOYA-of-RL
-The purpose of this repository is to learn RL(Reinforcement Learning).
-ChatGPT sets each theme.
+ここは、強化学習の勉強を目的としたレポジトリです。（TERAKOYA = 寺子屋）
