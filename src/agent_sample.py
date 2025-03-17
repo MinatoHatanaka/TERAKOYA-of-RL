@@ -51,5 +51,6 @@ class BlackjackAgent:
         )
         self.training_error.append(temporal_difference)
 
+
     def decay_epsilon(self):
         self.epsilon = max(self.final_epsilon, self.epsilon - self.epsilon_decay)
