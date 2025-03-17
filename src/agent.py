@@ -34,25 +34,26 @@ class CartPoleAgent(Agent):
             learning_rate: float,
             initial_epsilon: float,
             epsilon_decay:float,
+            final_epsilon: float,
             discount_factor: float = 0.95,
     ):
-        super().__init__(env, learning_rate, initial_epsilon, epsilon_decay, discount_factor)
+        super().__init__(env, learning_rate, initial_epsilon, epsilon_decay, final_epsilon, discount_factor)
 
-    def get_action(self, obs: Box(low=[-4.8, -np.inf, -0.41887903, -np.inf], high=[4.8, np.inf, 0.41887903, np.inf], shape=(4,), dtype=np.float32)) -> int:
+    def get_action(self, obs: Box(low=np.array([-4.8, -np.inf, -0.41887903, -np.inf]), high=np.array([4.8, np.inf, 0.41887903, np.inf]), shape=(4,), dtype=np.float32)) -> int:
         if np.random.random() < self.epsilon:
             return self.env.action_space.sample()
         else:
-            return int(np.argmax(self.q_values[obs]))
+            return int(np.argmax(self.q_values[tuple(obs)]))
 
     def update(self,
-               obs: Box(low=[-4.8, -np.inf, -0.41887903, -np.inf], high=[4.8, np.inf, 0.41887903, np.inf], shape=(4,), dtype=np.float32),
+               obs: Box(low=np.array([-4.8, -np.inf, -0.41887903, -np.inf]), high=np.array([4.8, np.inf, 0.41887903, np.inf]), shape=(4,), dtype=np.float32),
                action: int,
                reward: float,
                terminated: bool,
-               next_obs: Box(low=[-4.8, -np.inf, -0.41887903, -np.inf], high=[4.8, np.inf, 0.41887903, np.inf], shape=(4,), dtype=np.float32),
+               next_obs: Box(low=np.array([-4.8, -np.inf, -0.41887903, -np.inf]), high=np.array([4.8, np.inf, 0.41887903, np.inf]), shape=(4,), dtype=np.float32),
     ):
-        future_q_values = (not terminated) * np.max(self.q_values[next_obs])
+        future_q_values = (not terminated) * np.max(self.q_values[tuple(next_obs)])
         temporal_difference = (
-            reward + self.discount_factor * future_q_values - self.q_values[obs][action]
+            reward + self.discount_factor * future_q_values - self.q_values[tuple(obs)][action]
         )
         self.training_error.append(temporal_difference)
