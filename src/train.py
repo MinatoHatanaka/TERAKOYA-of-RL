@@ -2,7 +2,7 @@ import gymnasium as gym
 import numpy as np
 from tqdm import tqdm
 from matplotlib import pyplot as plt
-from src.agent import BlackjackAgent
+from src.agent_sample import BlackjackAgent
 
 learning_rate = 0.01
 n_episodes = 100_000
