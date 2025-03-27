@@ -2,18 +2,18 @@ import gymnasium as gym
 import numpy as np
 from tqdm import tqdm
 from matplotlib import pyplot as plt
-from src.agent import CartPoleAgent
+from src.agent import FrozenLakeAgent
 
 learning_rate = 0.01
-n_episodes = 100_000
+n_episodes = 50000
 start_epsilon = 1.0
 epsilon_decay = start_epsilon / (n_episodes / 2)
 final_epsilon = 0.1
 
-env = gym.make("CartPole-v1")
+env = gym.make("FrozenLake-v1")
 env = gym.wrappers.RecordEpisodeStatistics(env, buffer_length=n_episodes)
 
-agent = CartPoleAgent(
+agent = FrozenLakeAgent(
     env=env,
     learning_rate=learning_rate,
     initial_epsilon=start_epsilon,

@@ -27,33 +27,32 @@ class Agent:
     def decay_epsilon(self):
         self.epsilon = max(self.final_epsilon, self.epsilon - self.epsilon_decay)
 
-class CartPoleAgent(Agent):
-    def __init__(
-            self,
-            env: gym.Env,
-            learning_rate: float,
-            initial_epsilon: float,
-            epsilon_decay:float,
-            final_epsilon: float,
-            discount_factor: float = 0.95,
-    ):
+    def save_q_table(self):
+
+
+class FrozenLakeAgent(Agent):
+    def __init__(self, env, learning_rate, initial_epsilon, epsilon_decay, final_epsilon, discount_factor = 0.95):
         super().__init__(env, learning_rate, initial_epsilon, epsilon_decay, final_epsilon, discount_factor)
 
-    def get_action(self, obs: Box(low=np.array([-4.8, -np.inf, -0.41887903, -np.inf]), high=np.array([4.8, np.inf, 0.41887903, np.inf]), shape=(4,), dtype=np.float32)) -> int:
+    def get_action(self, obs: int) -> int:
         if np.random.random() < self.epsilon:
             return self.env.action_space.sample()
         else:
-            return int(np.argmax(self.q_values[tuple(obs)]))
+            return int(np.argmax(self.q_values[obs]))
 
     def update(self,
-               obs: Box(low=np.array([-4.8, -np.inf, -0.41887903, -np.inf]), high=np.array([4.8, np.inf, 0.41887903, np.inf]), shape=(4,), dtype=np.float32),
+               obs: int,
                action: int,
-               reward: float,
+               reward: int,
                terminated: bool,
-               next_obs: Box(low=np.array([-4.8, -np.inf, -0.41887903, -np.inf]), high=np.array([4.8, np.inf, 0.41887903, np.inf]), shape=(4,), dtype=np.float32),
+               next_obs: int
     ):
-        future_q_values = (not terminated) * np.max(self.q_values[tuple(next_obs)])
+        future_q_value = (not terminated) * np.max(self.q_values[next_obs])
         temporal_difference = (
-            reward + self.discount_factor * future_q_values - self.q_values[tuple(obs)][action]
+            reward + self.discount_factor * future_q_value - self.q_values[obs][action]
+        )
+
+        self.q_values[obs][action] = (
+            self.q_values[obs][action] + self.lr * temporal_difference
         )
         self.training_error.append(temporal_difference)
